@@ -1,0 +1,33 @@
+# BlackJack
+
+# importieren der Funktion Variation, hier: product
+from itertools import product
+
+# Die Startkarte der Bank
+zsum = 10
+
+# Alle Karten in einem Kartendeck
+Karten = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+# Alle Variationen von Händen zwischen 1 bis maximal 11 Karten
+# mehr als das kann die Bank nicht ziehen, eigentlich höchstens 7, wird später aber wegfallen
+for i in range(1, len(Karten) + 1):
+
+    # Hier die funktion für die Variationen, für alle möglichen Hände zwischen 1 und 11 Karten
+    zweg = product(Karten, repeat=i)
+
+    # Der einfachheitshalber werden die tupeln in der Liste aus den verschieden Listen genommen und in Listen umgewandelt
+    # Das vereinfacht dann deren spätere Sortierung
+    for x in zweg:
+        y = list(x)
+
+        # Hier werden die Zwischensummen der Listen ausgerechnet
+        for number in y:
+            zsum += number
+            # Falls die Zwischensumme die werte 17,18,19,20,21 nicht annimmt und die Summe der Liste den gewünschten
+            # Endwert hat, wird die Liste ausgedrückt
+            if zsum not in [17, 18, 19, 20, 21] and sum(y) + 10 == 17:
+                print(y)
+            else:
+                # Falls die Bedingung nicht zutrifft wird sie einfach nicht ausgedrückt
+                x = "unwichtig"
