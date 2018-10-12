@@ -1,0 +1,37 @@
+# BlackJack
+# Import Funktion: Variation mit Wiederholung
+from itertools import product
+
+# Startkarte der Bank, welche im Spiel bekannt ist
+print("Startkarte bitte eingeben")
+sk = int(input())
+
+# Alle Karten
+Karten = [ 1,2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+# Da die Bank bis und mit 16 ziehen muss und bei Werten zwischen
+# 17 bis 21 stehen bleiben muss ist mindestens 1 weitere Karte nötig
+# und maximal 7 weitere möglich, also range(1,8), die 8 wird nicht mitgezählt
+for i in range(1, 8):
+
+    # Variationen n^k, in der function unter product(n, repeat =k)
+    # Also alle Variationen mit k welche Werte 1 bis 7 annehmen
+    zweg = product(Karten, repeat=i)
+
+    # Alle Elemente werden getrennt und von Tupeln in Listen umgewandelt,
+    # weil man Tupel nicht verändern kann
+    for x in zweg:
+        y = list(x)
+
+        # Hier wird die vorletzte Summe der Liste gesucht, die bestimmte Wert nicht annehmen darf
+        z = sum(y[:-1])
+
+        # Alle Listen, deren Summe 17 beträgt und deren Zwischensumme nicht
+        # die wie bereits erwähnten Werte nicht annehmen darf
+        if sum(y) + sk == 17 and z not in [17, 18, 19, 20, 21]:
+
+            if 1 in y:
+                if sum(y[:y.index(1)])+sk >10:
+                    print(y)
+            else:
+                print(y)
