@@ -1,33 +1,65 @@
-# BlackJack
-
-# importieren der Funktion Variation, hier: product
 from itertools import product
 
-# Die Startkarte der Bank
-zsum = 10
+print("Startkarte der Bank bitte eingeben (Ass ist 11 und Bildkarten sind 10:")
+sk = int(input())
 
-# Alle Karten in einem Kartendeck
+print("Endwert eingeben:")
+
+ew = int(input())
+
 Karten = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
-# Alle Variationen von Händen zwischen 1 bis maximal 11 Karten
-# mehr als das kann die Bank nicht ziehen, eigentlich höchstens 7, wird später aber wegfallen
-for i in range(1, len(Karten) + 1):
+liste = []
 
-    # Hier die funktion für die Variationen, für alle möglichen Hände zwischen 1 und 11 Karten
+summehand = 0
+
+for i in range(1, 6):
+
     zweg = product(Karten, repeat=i)
 
-    # Der einfachheitshalber werden die tupeln in der Liste aus den verschieden Listen genommen und in Listen umgewandelt
-    # Das vereinfacht dann deren spätere Sortierung
     for x in zweg:
         y = list(x)
 
-        # Hier werden die Zwischensummen der Listen ausgerechnet
-        for number in y:
-            zsum += number
-            # Falls die Zwischensumme die werte 17,18,19,20,21 nicht annimmt und die Summe der Liste den gewünschten
-            # Endwert hat, wird die Liste ausgedrückt
-            if zsum not in [17, 18, 19, 20, 21] and sum(y) + 10 == 17:
-                print(y)
+        z = sum(y[:-1]) + sk
+
+        if sum(y) + sk == ew and z not in [17, 18, 19, 20, 21]:
+
+            if 1 in y:
+                if sum(y[:y.index(1)]) + sk > 10:
+                    liste.append(y)
             else:
-                # Falls die Bedingung nicht zutrifft wird sie einfach nicht ausgedrückt
-                x = "unwichtig"
+                liste.append(y)
+
+for hand in liste:
+
+    p = 1
+    for i in hand:
+
+        if i != 10:
+            i = 1 / 13
+
+        else:
+            i = 4 / 13
+
+        p = p * i
+
+    summehand += p
+
+if (sk == 10 or sk == 11) and ew == 21:
+    summehand = summehand - 4 / 169
+
+    if sk == 10:
+        blackjack = 1 / 13
+    if sk == 11:
+        blackjack = 4 / 13
+
+    print("Wahrscheinlichkeit 21 Punkte ohne Black Jack zu erreichen beträgt:")
+    print(summehand)
+    print("Wahrscheinlichkeit 21 Punkte mit einem Black Jack zu erreichen beträgt:")
+    print(blackjack)
+
+else:
+
+    print("Die Wahrscheinlichkeit beträgt:")
+
+    print(summehand)
