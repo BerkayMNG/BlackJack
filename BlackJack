@@ -1,0 +1,468 @@
+import random
+
+# Das Deck. Jedes Deck hat 4 Karten mit gleichem Wert. Einfachheitshalber
+# haben alle Bildkarten den Wert 10. Hier sind es Sechskartendecks.
+deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, "A"] * 4 * 6
+
+# kontrolliert ob Teilen möglich ist
+def splitpossible(list):
+    if list[0] == list[1]:
+        return True
+    else:
+        return False
+
+# Ziehen einer Karte (zufällig). Dabei wird eine Karte aus dem Deck gezogen
+# und in die Hand des spielers hinzugefügt. Die gezogene Karte
+# wird aus dem Deck gelöscht
+def hit(x, list):
+    s = random.sample(list, 1)
+    list.remove(s[0])
+    x.append(s[0])
+    del(s)
+
+
+# Die Punktzahl der Hand des spielers wird berechnet.
+# Ein Ass zählt dann 11 Punkte, wenn der Spieler sich nicht überkauft
+# Zudem kann nur ein Ass eine 11 zählen, bei zwei würde man sich überkaufen.
+def value(list):
+    if "A" in list:
+
+        z = list.copy()
+
+        z.remove("A")
+
+        for n, i in enumerate(z):
+            if i == "A":
+                z[n] = 1
+
+        if sum(z) < 11:
+
+            v = sum(z) + 11
+        else:
+            v = sum(z) + 1
+
+        return v
+
+
+    else:
+
+        v = sum(list)
+
+    return v
+
+# Hier wird die Punktzahl der Bank ausgewertet
+# Das Ass zählt dabei immer als 11, es sei denn die Bank überkaufe sich
+# D.h; Es gibt nie 2 Asse die 11 zählen
+# Das Ass zählt 11, wenn die Summe davor kleiner als 11 ist
+def bank(list):
+    if "A" in list:
+
+        h = list.copy()
+
+        ba = h[:h.index("A")]
+        sum(ba)
+        if sum(ba) < 11:
+
+            list[list.index("A")] = 11
+        else:
+            list[list.index("A")] = 1
+
+        if "A" in list:
+            for n, i in enumerate(list):
+                if i == "A":
+                    list[n] = 1
+            bv = sum(list)
+        else:
+            bv = sum(list)
+
+        return bv
+    else:
+        bv = sum(list)
+
+    return bv
+
+#Das Spiel beginnt mit dem Einsatz
+print("Bitte betätigen Sie Ihren Einsatz in CHF:")
+
+
+while True:
+    try:
+
+        f = int(input())
+
+    except ValueError:
+        print("Eingabe ungültig. Bitte versuchen Sie es erneut: ")
+
+    else:
+        print("Sie haben ", f, " Franken gesetzt")
+        break
+
+
+# sp=Spieler, cp = Bank. Spieler bekommt zufällig zwei, Bank zufällig eine Karte welche aus dem
+# deck gelöscht wird
+sp = random.sample(deck, 2)
+for i in sp:
+    deck.remove(i)
+cp = random.sample(deck, 1)
+for x in cp:
+    deck.remove(x)
+
+print("Der Spieler hat folgende Karten erhalten:")
+print(sp)
+
+print("Die Bank hat folgende Karte erhalten:")
+print(cp)
+
+
+
+if splitpossible(sp) == True:
+
+    print("Wie wollen Sie weiterspielen?")
+
+    print("hit :           1")
+    print("stand:          2")
+    print("dopple down:    3")
+    print("split:          4")
+
+    print("Bitte geben Sie die für den gewünschten Spielschritt zugeschrieben Zahl ein.")
+
+    #Sollte nur 1 bis 4 zulassen
+    while True:
+        try:
+
+            d = int(input())
+
+        except ValueError:
+            print("Eingabe ungültig. Versuchen Sie es erneut:")
+
+        else:
+            break
+
+
+# Falls das Teilen nicht möglich ist, kann man den entsprechenden Schritt nicht ausführen
+else:
+
+    print("Wie wollen Sie weiterspielen?")
+    print("hit :           1")
+    print("stand:          2")
+    print("dopple down:    3")
+    print("Bitte geben Sie die für den gewünschten Spielschritt zugeschrieben Zahl ein.")
+
+    #Muss verbessert werden. Sollte nur 1 bis 4 zulassen
+    while True:
+        try:
+
+            d = int(input())
+
+        except ValueError:
+            print("Eingabe ungültig. Versuchen Sie es erneut:")
+
+        else:
+            break
+
+
+#Falls das Teilen möglich ist
+if splitpossible(sp) == True:
+
+    #Wenn der Spieler zieht
+    if d == 1:
+        sp = sp + random.sample(deck, 1)
+        deck.remove(sp[-1])
+        print("Ihre Hand:")
+        print(sp)
+
+        y = 0
+        #Will er weiterziehen? schleife
+        while y != 2 and value(sp) < 22:
+            print("Wollen Sie weiterziehen? Falls ja geben Sie die Zahl 1 ein, falls nicht die Zahl 2:")
+
+            y = int(input())
+
+            if y == 1:
+                hit(sp, deck)
+                print(sp)
+
+            if y != 1 and y != 2:
+                print("Eingabe nicht gültig. Bitte wiederhohlen.")
+
+            if y == 2:
+                break
+
+
+        print("Sie haben folgende Hand:")
+        print(sp)
+        print("Sie haben folgende Punktzahl:")
+        print(value(sp))
+
+    #er bleibt bei der Punktzahl
+    if d == 2:
+        print("Sie bleiben stehen. Sie haben folgende Hand:")
+        print(sp)
+        print("Sie haben folgende Punktzahl:")
+        print(value(sp))
+
+    #Verdoppelt. Einsatz wird verdoppelt und er erhält noch genau eine Karte
+    if d == 3:
+        print("Sie verdoppeln. Sie erhalten noch eine Karte.")
+        print("Ihr Einsatz beträgt jetzt ", 2*f, "Franken")
+        hit(sp, deck)
+        print("Sie haben folgende Hand:")
+        print(sp)
+        print("Sie haben folgende Punktzahl:")
+        print(value(sp))
+
+    #Teilen, spielt mit zwei Händen weiter
+    if d == 4:
+        sp1 = [sp[0]]
+        sp2 = [sp[1]]
+
+        print("Ihre erste Hand:")
+        print(sp1)
+        print("Ihre zweite Hand:")
+        print(sp2)
+        print("Sie spielen nun mit zwei getrennten Einsätzen weiter, welche je gleich des Anfangeinsatzes entsprechen. Also mit Total:")
+        print(2*f)
+        k = 0
+        l = 0
+
+        #Solange er weiterspielen will. Zu ergänzen: Wert der hand darf nicht 21 überschreiten. dann darf er nicht mehr ziehen.
+        while k != 2 or l != 2:
+
+            if k != 2:
+                print("Wollen Sie mit der ersten Hand weiterziehen? Falls Ja geben Sie die Zahl"
+                      " 1 ein, falls Nein die Zahl 2:")
+                k = int(input())
+            if k != 2:
+                hit(sp1, deck)
+                print(sp1)
+
+            if l != 2:
+                print("Wollen Sie mit der zweiten Hand weiterziehen? Falls Ja geben Sie die Zahl"
+                      " 1 ein, Falls Nein die Zahl 2:")
+                l = int(input())
+
+            if l != 2:
+                hit(sp2, deck)
+                print(sp2)
+
+
+        #Um IndentationError zu vermeiden wird beim teilen hier schon der weitere Verlauf fortgesetzt
+        #Bei den anderen Fällen erst später
+        while bank(cp) < 17:
+            hit(cp, deck)
+
+        print("Die Bank zieht.")
+        print("Die Bank hat folgende Punktzahl:")
+        print(bank(cp))
+        pl = 0
+
+        print("Für die erste Hand gilt:")
+        print("Ihre Punktzahl:")
+        print(value(sp1))
+        if value(sp1) != 21 and bank(cp) != 21:
+            if value(sp1) < 21 and bank(cp) > 21:
+                print("Die bank hat sich überkauft, Sie nicht! Sie gewinnen")
+                print(f, " Franken")
+                pl = f
+            if value(sp1) > 21 and bank(cp) > 21:
+                print("Sowohl Sie als auch die Bank haben sich überkauft. Sie verlieren den Einsatz dieser Hand.")
+                pl = -f
+            if value(sp1) > 21 and bank(cp) < 22:
+                print("Sie haben sich überkauft. Sie verlieren den Einsatz dieser Hand.")
+                pl = -f
+            if value(sp1) < 22 and bank(cp) < 22:
+                if value(sp1) > bank(cp):
+                    print("Sie haben die höhere Punktzahl. Sie gewinnen:")
+                    print(f, " Franken")
+                    pl = f
+                if value(sp1) < bank(cp):
+                    print("Sie haben die niedrigere Punktzahl. Sie verlieren den Einsatz dieser Hand.")
+                    pl = -f
+                if value(sp1) == bank(cp):
+                    print("Unentschieden. Sie erhalten lediglich den Einsatz dieser Hand zurück.")
+        if value(sp1) == 21 and bank(cp) == 21:
+            if len(sp1) != 2 and len(cp) != 2:
+                print("Unentschieden. Sie erhalten lediglich den Einsatz dieser Hand zurück.")
+            if len(sp1) == 2 and len(cp) == 2:
+                print(
+                    "Sowohl Sie als auch die Bank haben einen Black Jack. Es ist Unentschieden. Sie erhalten lediglich den Einsatz dieser Hand zurück.")
+            if len(sp1) != 2 and len(cp) == 2:
+                print("Die Bank gewinnt mit ihrem Black Jack.")
+                pl = -f
+            if len(sp1) == 2 and len(cp) != 2:
+                print("Sie haben einen Black Jack! Sie gewinnen")
+                print(1.5 * f)
+                pl = 1.5* f
+        if value(sp1) == 21 and bank(cp) != 21:
+            if len(sp1) != 2:
+                print("Sie haben die höhere Punktzahl. Sie gewinnen:")
+                print(f, " Franken")
+                pl = f
+            if len(sp1) == 2:
+                print("Sie gewinnen mit einem Black Jack!")
+                print("Sie erhalten", 1.5 * f, "Franken")
+                pl = 1.5*f
+        if value(sp1) != 21 and bank(cp) == 21:
+            print("Sie verlieren ihren Einsatz.")
+            pl = -f
+
+
+        print("Für die zeite Hand gilt:")
+        print("Ihre Punktzahl:")
+        print(value(sp2))
+        if value(sp2) != 21 and bank(cp) != 21:
+            if value(sp2) < 21 and bank(cp) > 21:
+                print("Die bank hat sich überkauft, Sie nicht! Sie gewinnen")
+                print(f, " Franken")
+                pl = pl+f
+            if value(sp2) > 21 and bank(cp) > 21:
+                print("Sowohl Sie als auch die Bank haben sich überkauft. Sie verlieren den Einsatz dieser Hand.")
+                pl = pl-f
+            if value(sp2) > 21 and bank(cp) < 22:
+                print("Sie haben sich überkauft. Sie verlieren den Einsatz dieser Hand.")
+                pl = pl-f
+            if value(sp2) < 22 and bank(cp) < 22:
+                if value(sp2) > bank(cp):
+                    print("Sie haben die höhere Punktzahl. Sie gewinnen:")
+                    print(f, " Franken")
+                    pl = pl + f
+                if value(sp2) < bank(cp):
+                    print("Sie haben die niedrigere Punktzahl. Sie verlieren den Einsatz dieser Hand.")
+                    pl = pl -f
+                if value(sp2) == bank(cp):
+                    print("Unentschieden. Sie erhalten lediglich den Einsatz dieser Hand zurück.")
+        if value(sp2) == 21 and bank(cp) == 21:
+            if len(sp2) != 2 and len(cp) != 2:
+                print("Unentschieden. Sie erhalten lediglich den Einsatz dieser Hand zurück.")
+            if len(sp2) == 2 and len(cp) == 2:
+                print(
+                    "Sowohl Sie als auch die Bank haben einen Black Jack. Es ist Unentschieden. Sie erhalten lediglich den Einsatz dieser Hand zurück.")
+            if len(sp2) != 2 and len(cp) == 2:
+                print("Die Bank gewinnt mit ihrem Black Jack.")
+                pl = pl-f
+            if len(sp2) == 2 and len(cp) != 2:
+                print("Sie haben einen Black Jack! Sie gewinnen")
+                print(1.5 * f)
+                pl = 1.5* f+pl
+        if value(sp2) == 21 and bank(cp) != 21:
+            if len(sp2) != 2:
+                print("Sie haben die höhere Punktzahl. Sie gewinnen:")
+                print(f, " Franken")
+                pl = f+pl
+            if len(sp2) == 2:
+                print("Sie gewinnen mit einem Black Jack!")
+                print("Sie erhalten", 1.5 * f, "Franken")
+                pl = 1.5*f+pl
+        if value(sp2) != 21 and bank(cp) == 21:
+            print("Sie verlieren ihren Einsatz.")
+            pl = -f+pl
+
+
+        print("Totaler Gewinn/Verlust:")
+        print(pl, "Franken")
+
+
+
+#Praktisch das gleich, nur dass man nicht teilen kann
+if splitpossible(sp) == False:
+
+
+    if d == 1:
+        sp = sp + random.sample(deck, 1)
+        deck.remove(sp[-1])
+        print("Ihre Hand:")
+        print(sp)
+
+        y = 0
+        while y != 2 and value(sp) < 22:
+            print("Wollen Sie weiterziehen? Falls ja geben Sie die Zahl 1 ein, falls nicht die Zahl 2:")
+
+            y = int(input())
+
+            if y == 1:
+                hit(sp, deck)
+                print(sp)
+            if y != 1 and y != 2:
+                print("Eingabe nicht gültig. Bitte wiederhohlen.")
+
+            if y == 2:
+                break
+
+
+        print("Sie haben folgende Hand:")
+        print(sp)
+        print("Sie haben folgende Punktzahl:")
+        print(value(sp))
+
+
+    if d == 2:
+        print("Sie bleiben stehen. Sie haben folgende Hand:")
+        print(sp)
+        print("Sie haben folgende Punktzahl:")
+        print(value(sp))
+
+
+    if d == 3:
+        print("Sie verdoppeln. Sie erhalten noch eine Karte.")
+        print("Ihr Einsatz beträgt jetzt ", 2 * f, "Franken")
+        f = 2*f
+        hit(sp, deck)
+        print("Sie haben folgende Hand:")
+        print(sp)
+        print("Sie haben folgende Punktzahl:")
+        print(value(sp))
+
+
+
+#Falls nicht geteilt wird
+if d in [1,2,3]:
+
+    #Die Bank zieht. Zu verbessern: Auch die Karten der Bank und nicht nur ihre Punktzahl soll gezeigt werden
+    while bank(cp) < 17:
+        hit(cp,deck)
+
+    print("Die Bank zieht.")
+    print("Die Bank hat folgende Punktzahl:")
+    print(bank(cp))
+
+    #Hier wird geschaut ob der Spieler gewinnt oder verliert. Falls er gewinnt, ob es ein Black Jack ist
+    #den da ist das Gewinnverhältnis höher
+    if value(sp) != 21 and bank(cp) != 21:
+        if value(sp) < 21 and bank (cp) > 21:
+            print("Die bank hat sich überkauft! Sie gewinnen:")
+            print(f, " Franken")
+        if value(sp) > 21 and bank(cp) > 21:
+            print("Sowohl Sie als auch die Bank haben sich überkauft. Sie verlieren ihren Einsatz.")
+        if value(sp) > 21 and bank(cp) < 22:
+            print("Sie haben sich überkauft. Sie verlieren Ihren Einsatz.")
+        if value(sp) < 22 and bank(cp) < 22:
+            if value(sp) > bank(cp):
+                print("Sie haben die höhere Punktzahl. Sie gewinnen:")
+                print(f, " Franken")
+            if value(sp) < bank(cp):
+                print("Sie haben die niedrigere Punktzahl. Sie verlieren ihren Einsatz.")
+            if value(sp) == bank(cp):
+                print("Unentschieden. Sie erhalten lediglich ihren Einsatz zurück.")
+    if value(sp) == 21 and bank(cp) == 21:
+        if len(sp) != 2 and len(cp)!= 2:
+            print("Unentschieden. Sie erhalten lediglich ihren Einsatz zurück.")
+        if len(sp) == 2 and len(cp)== 2:
+            print("Sowohl Sie als auch die Bank haben einen Black Jack. Es ist Unentschieden. Sie erhalten lediglich ihren Einsatz zurück.")
+        if len(sp)!= 2 and len(cp) ==2:
+            print("Die Bank gewinnt mit ihrem Black Jack.")
+        if len(sp) == 2 and len(cp) != 2:
+            print("Sie haben einen Black Jack! Sie gewinnen")
+            print(1.5*f)
+    if value(sp) == 21 and bank(cp) != 21:
+        if len(sp) != 2:
+            print("Sie haben die höhere Punktzahl. Sie gewinnen:")
+            print(f, " Franken")
+        if len(sp)==2:
+            print("Sie gewinnen mit einem Black Jack!")
+            print("Sie erhalten", 1.5*f, "Franken")
+    if value(sp) != 21 and bank(cp) == 21:
+        print("Sie verlieren ihren Einsatz.")
+
+
+#Was dazu kommt. Das Spiel sollte so lange fortgesetzt werden, bis etwa 1/3 des decks übrig bleibt. Daher sollten auch alle Listen, variabeln welche nicht wieder von neuem
+#eingegebn werden gelöscht werden. Wie z.b die Liste sp. Sonst wird diese stetig neu ergänzt und vergrössert sich stetig
