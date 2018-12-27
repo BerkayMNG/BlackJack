@@ -1,0 +1,116 @@
+#ermöglicht das benutzen der Funktion product, mehr dazu folgt.
+from itertools import product
+
+#Ziel: Alle Kombinationen zu finden, welche mit der gewünschten Startkarte einen Endwert erreicht
+#Dabei gilt: Die Bank zieht bis und mit 16. Eine Ass zählt 11, es sei denn die Banke überkaufe sich damit.
+
+print("Startkarte der Bank bitte eingeben (Ass ist 11 und Bildkarten sind 10:")
+
+sk = int(input())
+
+print("Endwert eingeben:")
+
+ew = int(input())
+
+#Das sind alle Punkte die man mit einer Karte erreichen kann
+#Es wird nicht unterschieden bei den Bildkarten, alle ergeben 10 Punkte
+Karten = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+liste = []
+
+summehand = 0
+
+#eine Schleife die mit den Werten 1 bis 7 durchläuft für die product Funktion
+for i in range(1, 7):
+
+    # Die Funktion product ist von zwei Parametern abhängig, einer Liste (Karten) und einer Zahl (Zahlen 1 bis 7)
+    # Dann werden alle Variation mit Wiederholungen der Elemente in der Liste Karten durchgeführt, wenn man i Stück (1 bis 7)
+    # herausnimmt. Das heisst, alle Kombinationen mit mehr als 7 (bzw. mit Startkarte 8) werden nicht betrachtet. Im Abschnitt 3.1.2 der Arbeit
+    #ist erklärt, wieso das nicht so gravierend ist
+    zweg = product(Karten, repeat=i)
+
+    #Hier werden diese Variationen in Listen "verpackt" (statt Tupel)
+    for x in zweg:
+        y = list(x)
+
+
+        #Da für die Bank gilt, dass sie bis und mit 16 ziehen muss und dann aufhört zu ziehen
+        #muss sortiert werden. Alles was nicht möglich ist wird nicht beachtet
+
+        #Die Startkarte wurde bisher nicht(!) berücksichtigt. Zudem darf aufgrund der oberen Regel (Zeile 4-5) die Summe bis zur vorletzten Karte nicht
+        #Die Werte 17 bis 21 aufweisen. Sonst dürfte die Bank ja nicht mehr weiterziehen. Überkaufen soll sich die Bank auch nicht. Daher wird die Summe bis zur vorletzten Zahl der Kartenkombinationen
+        #mit dem Wert der Startkarte addiert
+        z = sum(y[:-1]) + sk
+
+
+        #Nur die Kombinationen, welche mit der Startkarte den gewünschten Endwert erreichen und die Regel einhalten werden weiter betrachtet
+        if sum(y) + sk == ew and z not in [17, 18, 19, 20, 21]:
+
+            #Die Wertung des Asses wird beachtet. Es ist nicht möglich, dass eine Ass mit 1 gewertet wird, falls die Punktzahl (Summe
+            #aller Elemente davor zusammen mit der Startkarte) davor nicht grösser als 11 ist. Nur in diesem Fall darf die 1 so gewertet werden
+            #Da die Bank ansonsten sich überkaufen würde ( mehr als 21 Punkte haben würde)
+            if 1 in y:
+                #Diese werden sortiert und in eine neue Liste gepackt
+                if sum(y[:y.index(1)]) + sk > 10:
+                    liste.append(y)
+
+            #Falls keine 1 in der Kombination enthalten ist, muss die Regelung nicht beachtet werden. Die Kombination wird der neuen Liste hinzugefügt
+            else:
+                liste.append(y)
+
+
+#Zu guter letzt wird nun die Wahrscheinlichkeit der Bank betrachtet, bedingt durch die Startkarte den Endwert zu erreichen.
+#Dabei wird zuerst die Wahrscheinlichkeit berechnet, die einzelnen Kombinationen zu ziehen. Die Wahrscheinlichkeit eine Karte zu ziehen beträgt  1/13, die 10 beträgt 4/13
+#Da die Bildkarten auch 10 Punkte zählen. Dann werden die Wahrscheinlichkeiten der Kombinationen miteinander addiert
+for hand in liste:
+
+    p = 1
+    for i in hand:
+
+        if i != 10:
+            i = 1 / 13
+
+        else:
+            i = 4 / 13
+
+        p = p * i
+
+    summehand += p
+
+#Bei 21 Punkten und Startkarte 10 bzw 11 ist Vorsicht geboten. Denn der Black Jack darf nicht einfach
+#mit 21 Punkten gleichgesetzt werden. Der Black Jack wird dann separat eingeben (er besteht immerhin nur aus 2 Karten, bzw. Startwert und weitere Karte)
+#Zudem muss seine Wahrscheinlichkeit von 21 Punkten abgezogen werden. 
+if (sk == 10 or sk == 11) and ew == 21:
+
+    if sk == 10:
+        summehand = summehand-1/13
+        blackjack = 1 / 13
+    if sk == 11:
+        summehand = summehand - 4/13
+        blackjack = 4 / 13
+
+    print("Wahrscheinlichkeit 21 Punkte ohne Black Jack zu erreichen beträgt:")
+
+    print(summehand)
+
+    print("Gerundet:")
+
+    print(round(summehand, 4))
+
+    print("Wahrscheinlichkeit 21 Punkte mit einem Black Jack zu erreichen beträgt:")
+
+    print(blackjack)
+
+    print("Gerundet:")
+
+    print(round(blackjack,4))
+
+else:
+
+    print("Die Wahrscheinlichkeit beträgt:")
+
+    print(summehand)
+
+    print("Gerundet:")
+
+    print(round(summehand, 4))
