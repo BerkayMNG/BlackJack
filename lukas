@@ -1,0 +1,16 @@
+import random
+
+random.seed()
+
+#Liste mit eckigen Klammern
+
+Augenzahl = [1, 2, 3, 4, 5, 6]
+
+x = random.choices(Augenzahl, k=2)
+
+if x == [6, 6] or x == [5, 5] or x == [3, 3] or x == [5, 6] or x == [6, 5]:
+    print("Der Spieler würfelt: ", x)
+    print("Der Spieler gewinnt")
+else:
+    print("Der Spieler würfelt: ", x)
+    print("Der Gegenspieler ist an der Reihe")
