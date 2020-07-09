@@ -2,15 +2,44 @@ import random
 
 random.seed()
 
-#Liste mit eckigen Klammern
+# Liste mit eckigen Klammern
 
 Augenzahl = [1, 2, 3, 4, 5, 6]
 
-x = random.choices(Augenzahl, k=2)
+while True:
 
-if x == [6, 6] or x == [5, 5] or x == [3, 3] or x == [5, 6] or x == [6, 5]:
-    print("Der Spieler würfelt: ", x)
-    print("Der Spieler gewinnt")
-else:
-    print("Der Spieler würfelt: ", x)
-    print("Der Gegenspieler ist an der Reihe")
+    print("Bitte betätigen Sie ihren Einsatz:")
+    e = int(input())
+    print("Sie haben ", e, "Fr eingesetzt")
+
+    while True:
+
+        x = random.choices(Augenzahl, k=2)
+
+        if x == [6, 6] or x == [5, 5] or x == [3, 3] or x == [5, 6] or x == [6, 5]:
+            print("Der Spieler würfelt: ", x)
+            print("Der Spieler gewinnt", 2 * e, "Fr")
+            break
+        else:
+            print("Der Spieler würfelt: ", x)
+            print("Der Gegenspieler ist an der Reihe")
+
+            y = random.choices(Augenzahl, k=2)
+
+            if y == [4, 4] or y == [2, 2] or y == [1, 1] or y == [2, 1] or y == [1, 2]:
+                print("Der Gegenspieler würfelt: ", y)
+                print("Der Gegenspieler gewinnt")
+                print("Der Spieler verliert", e, "Fr")
+                break
+            else:
+                print("Der Gegenspieler würfelt: ", y)
+                print("Der Spieler ist an der Reihe")
+
+    print("Wollen Sie weiterspielen? Falls Ja drücken Sie die Taste 1. Falls Nein drücken Sie die 2")
+    d = int(input())
+
+    if d == 1:
+        pass
+    if d == 2:
+        break
+        
