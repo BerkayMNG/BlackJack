@@ -1,45 +1,83 @@
+#Zufallsgenerator
+
 import random
 
 random.seed()
 
-# Liste mit eckigen Klammern
+#Es sollen nur 10 Aufgaben vorkommen und eingabe muss ein int sein!
 
-Augenzahl = [1, 2, 3, 4, 5, 6]
+anzahl = 20
 
-while True:
-
-    print("Bitte betätigen Sie ihren Einsatz:")
-    e = int(input())
-    print("Sie haben ", e, "Fr eingesetzt")
-
-    while True:
-
-        x = random.choices(Augenzahl, k=2)
-
-        if x == [6, 6] or x == [5, 5] or x == [3, 3] or x == [5, 6] or x == [6, 5]:
-            print("Der Spieler würfelt: ", x)
-            print("Der Spieler gewinnt", 2 * e, "Fr")
-            break
+while anzahl < 0 or anzahl > 10:
+    try:
+        print("Wie viele Aufgaben (1 bis 10)?")
+        anzahl = int(input())
+        if anzahl < 0 or anzahl > 10:
+            print("Eingabe ungültig.")
         else:
-            print("Der Spieler würfelt: ", x)
-            print("Der Gegenspieler ist an der Reihe")
+            pass
+    except:
+        print("Eingabe ungültig.")
+        #Continue nicht nötig ohne Eingabe ist gültig
+        continue
+#Hier mit ihm testen ob int und ob programm richtig handelt
 
-            y = random.choices(Augenzahl, k=2)
+richtig = 0
 
-            if y == [4, 4] or y == [2, 2] or y == [1, 1] or y == [2, 1] or y == [1, 2]:
-                print("Der Gegenspieler würfelt: ", y)
-                print("Der Gegenspieler gewinnt")
-                print("Der Spieler verliert", e, "Fr")
-                break
-            else:
-                print("Der Gegenspieler würfelt: ", y)
-                print("Der Spieler ist an der Reihe")
+#Anzahl Aufgaben machen
+#range funktion anschauen im testcode
 
-    print("Wollen Sie weiterspielen? Falls Ja drücken Sie die Taste 1. Falls Nein drücken Sie die 2")
-    d = int(input())
+for aufgabe in range(1, anzahl+1):
 
-    if d == 1:
-        pass
-    if d == 2:
-        break
-        
+    #Alle vier Operatoren +,-,*,/
+
+    opzahl = random.randint(1,4)
+
+    if opzahl == 1:
+        a = random.randint(-10,30)
+        b = random.randint(-10,30)
+        op = "+"
+        c = a + b
+    elif opzahl == 2:
+        a = random.randint(1,30)
+        b = random.randint(1,30)
+        op = "-"
+        c = a - b
+    elif opzahl == 3:
+        a = random.randint(1,10)
+        b = random.randint(1,10)
+        op = "*"
+        c = a * b
+
+    # Nur ganze Zahlen daher a = c*b
+    elif opzahl == 4:
+        c = random.randint(1,10)
+        b = random.randint(1,10)
+        op = "/"
+        a = c * b
+
+    # Aufgabenstellung
+
+    print("Aufgabe", aufgabe, "von",
+          anzahl, ":",a, op, b)
+
+    for versuch in range(3):
+
+        try:
+            print("Bitte eine Zahl eingeben")
+            zahl = int(input())
+        except:
+            print("Sie haben keine Zahl eingegeben")
+            continue
+
+        if zahl == c:
+             print(zahl, "ist richtig")
+             richtig = richtig +1
+             break
+        else:
+             print(zahl,"ist falsch")
+
+    print("Ergebnis: ", c)
+
+print("Richtig:", richtig, "von", anzahl)
+
